@@ -27,22 +27,40 @@ app.get("/api/hello", function (req, res) {
 app.get("/api/:date", function (req,res) {
   const date = req.params.date
   const timeHandler = function (time) {
-  if (time.length > 10) {
-    const dateString = new Date(+time);
-    const final = {
-      unix: +time,
-      utc: dateString.toUTCString(),
+    
+  const timeStamp = Date.parse(time);
+  const timeDate = new Date(time).toUTCString();
+
+if (!time) {
+    const newTime = new Date(Date.now());
+    const response = {
+      unix: newTime.getTime(),
+      utc: newTime.toUTCString(),
     };
-    return final;
-  } else {
-    const dateString = new Date(time);
-    const dateUnix = dateString.getTime();
-    const final = {
-      unix: dateUnix,
-      utc: dateString.toUTCString(),
-    };
-    return final;
+    return response;
   }
+    
+  if (!isNaN(timeStamp)) {
+    const response = {
+      unix: timeStamp,
+      utc: timeDate,
+    };
+    return response;
+  } else if (isNaN(timeStamp)) {
+    const timeStamp = new Date(+time).getTime();
+    const timeDate = new Date(+time).toUTCString();
+    if (timeDate === "Invalid Date") {
+      const response = {
+        error: timeDate,
+      };
+      return response;
+    }
+    const response = {
+      unix: timeStamp,
+      utc: timeDate,
+    };
+    return response;
+  };
 };
   res.send(timeHandler(date))
 });
