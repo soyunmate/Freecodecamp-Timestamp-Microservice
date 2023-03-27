@@ -24,22 +24,20 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-app.get("/api/:date", function (req,res) {
-  const date = req.params.date
-  const timeHandler = function (time) {
-    
-  const timeStamp = Date.parse(time);
-  const timeDate = new Date(time).toUTCString();
-
-if (!time) {
-    const newTime = new Date(Date.now());
+app.get("/api/", function(req,res) {
+  const newTime = new Date(Date.now());
     const response = {
       unix: newTime.getTime(),
       utc: newTime.toUTCString(),
     };
-    return response;
-  }
-    
+    res.send(response);
+})
+
+app.get("/api/:date", function (req,res) {
+  const date = req.params.date
+  const timeHandler = function (time) {
+  const timeStamp = Date.parse(time);
+  const timeDate = new Date(time).toUTCString();
   if (!isNaN(timeStamp)) {
     const response = {
       unix: timeStamp,
